@@ -14,22 +14,8 @@ module MongoMapper
         end
         
         private
-          # def modifier_update(modifier, args)
-          #   criteria, updates = criteria_and_keys_from_args(args)
-          #   collection.update(criteria, {modifier => updates}, :multi => true)
-          # end
-
           def criteria_from_args(args)
             criteria_hash(args[0].is_a?(Hash) ? args[0] : {:id => args})
-            # if args.length == 1 
-            #   if args[0].is_a?(Hash)
-            #     args[0]
-            #   else
-            #     {:id => args[0]}
-            #   end
-            # else
-            #   {:id => {"$in" => args}}
-            # end
           end
       end
       
@@ -71,22 +57,22 @@ module MongoMapper
           merge_modifier('$push', updates)
         end
         
-        # def push_all(*args)
-        #   modifier_update('$pushAll', args)
-        # end
-        # 
+        def push_all(updates)
+          merge_modifier('$pushAll', updates)
+        end
+        
         # def add_to_set(*args)
         #   modifier_update('$addToSet', args)
         # end
         # alias push_uniq add_to_set
         # 
-        # def pull(*args)
-        #   modifier_update('$pull', args)
-        # end
-        # 
-        # def pull_all(*args)
-        #   modifier_update('$pullAll', args)
-        # end
+        def pull(updates)
+          merge_modifier('$pull', updates)
+        end
+        
+        def pull_all(updates)
+          merge_modifier('$pullAll', updates)
+        end
         # 
         # def pop(*args)
         #   modifier_update('$pop', args)

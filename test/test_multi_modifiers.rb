@@ -37,7 +37,7 @@ class MultiModifierTest < Test::Unit::TestCase
         @page  = @page_class.create(:title => 'Home', :tags => %w(foo bar))
         @page2 = @page_class.create(:title => 'Home')
       end
-
+    
       should "work with criteria" do
         @page_class.modify({:title => 'Home'}) do
           unset(:title, :tags)
@@ -50,7 +50,7 @@ class MultiModifierTest < Test::Unit::TestCase
         assert_author_changed @page
         assert_author_changed @page2
       end
-
+    
       should "work with ids" do
         @page_class.modify(@page.id, @page2.id) do
           unset(:title, :tags)
@@ -64,7 +64,7 @@ class MultiModifierTest < Test::Unit::TestCase
         assert_author_changed @page2
       end
     end
-
+    
     context "increment" do
       setup do
         @page  = @page_class.create(:title => 'Home')
@@ -246,100 +246,100 @@ class MultiModifierTest < Test::Unit::TestCase
       end
     end
     
-    # context "push_all" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home')
-    #     @page2 = @page_class.create(:title => 'Home')
-    #     @tags = %w(foo bar)
-    #   end
-    # 
-    #   should "work with criteria and modifier hashes" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       push_all(:tags => @tags)
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == @tags
-    # 
-    #     @page2.reload
-    #     @page.tags.should == @tags
-    #   end
-    # 
-    #   should "work with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       push_all(:tags => @tags)
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == @tags
-    # 
-    #     @page2.reload
-    #     @page.tags.should == @tags
-    #   end
-    # end
-    # 
-    # context "pull" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home', :tags => %w(foo bar))
-    #     @page2 = @page_class.create(:title => 'Home', :tags => %w(foo bar))
-    #   end
-    # 
-    #   should "work with criteria and modifier hashes" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       pull(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(bar)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(bar)
-    #   end
-    # 
-    #   should "be able to pull with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       pull(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(bar)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(bar)
-    #   end
-    # end
-    # 
-    # context "pull_all" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home', :tags => %w(foo bar baz))
-    #     @page2 = @page_class.create(:title => 'Home', :tags => %w(foo bar baz))
-    #   end
-    # 
-    #   should "work with criteria and modifier hashes" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       pull_all(:tags => %w(foo bar))
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(baz)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(baz)
-    #   end
-    # 
-    #   should "work with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       pull_all(:tags => %w(foo bar))
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(baz)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(baz)
-    #   end
-    # end
-    # 
+    context "push_all" do
+      setup do
+        @page  = @page_class.create(:title => 'Home')
+        @page2 = @page_class.create(:title => 'Home')
+        @tags = %w(foo bar)
+      end
+    
+      should "work with criteria and modifier hashes" do
+        @page_class.modify({:title => 'Home'}) do
+          push_all(:tags => %w(foo bar))
+        end
+    
+        @page.reload
+        assert_equal(@tags, @page.tags)
+    
+        @page2.reload
+        assert_equal(@tags, @page2.tags)
+      end
+    
+      should "work with ids and modifier hash" do
+        @page_class.modify(@page.id, @page2.id) do
+          push_all(:tags => %w(foo bar))
+        end
+    
+        @page.reload
+        assert_equal(@tags, @page.tags)
+    
+        @page2.reload
+        assert_equal(@tags, @page2.tags)
+      end
+    end
+    
+    context "pull" do
+      setup do
+        @page  = @page_class.create(:title => 'Home', :tags => %w(foo bar))
+        @page2 = @page_class.create(:title => 'Home', :tags => %w(foo bar))
+      end
+    
+      should "work with criteria and modifier hashes" do
+        @page_class.modify({:title => 'Home'}) do
+          pull(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(bar), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(bar), @page2.tags)
+      end
+    
+      should "be able to pull with ids and modifier hash" do
+        @page_class.modify(@page.id, @page2.id) do
+          pull(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(bar), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(bar), @page2.tags)
+      end
+    end
+    
+    context "pull_all" do
+      setup do
+        @page  = @page_class.create(:title => 'Home', :tags => %w(foo bar baz))
+        @page2 = @page_class.create(:title => 'Home', :tags => %w(foo bar baz))
+      end
+    
+      should "work with criteria and modifier hashes" do
+        @page_class.modify({:title => 'Home'}) do
+          pull_all(:tags => %w(foo bar))
+        end
+    
+        @page.reload
+        assert_equal(%w(baz), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(baz), @page2.tags)
+      end
+    
+      should "work with ids and modifier hash" do
+        @page_class.modify(@page.id, @page2.id) do
+          pull_all(:tags => %w(foo bar))
+        end
+    
+        @page.reload
+        assert_equal(%w(baz), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(baz), @page2.tags)
+      end
+    end
+    
     # context "add_to_set" do
     #   setup do
     #     @page  = @page_class.create(:title => 'Home', :tags => 'foo')
