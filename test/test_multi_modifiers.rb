@@ -63,17 +63,6 @@ class MultiModifierTest < Test::Unit::TestCase
         assert_author_changed @page
         assert_author_changed @page2
       end
-      
-      should "work with a single id" do
-        @page_class.modify(@page.id) do
-          unset(:title, :tags)
-          set(:author => "quentin")
-        end
-        
-        assert_keys_removed @page, :title, :tags
-        
-        assert_author_changed @page
-      end
     end
 
     context "increment" do
@@ -107,18 +96,6 @@ class MultiModifierTest < Test::Unit::TestCase
         assert_author_changed @page
         assert_author_changed @page2
       end
-      
-      should "work with a single id" do
-        @page_class.modify(@page.id) do
-          increment(:day_count => 1, :week_count => 2, :month_count => 3)
-          set(:author => "quentin")
-        end
-        
-        assert_page_counts @page, 1, 2, 3
-        
-        assert_author_changed @page
-      end
-      
     end
     
     context "decrement" do
@@ -151,17 +128,6 @@ class MultiModifierTest < Test::Unit::TestCase
         
         assert_author_changed @page
         assert_author_changed @page2
-      end
-      
-      should "work with a single id" do
-        @page_class.modify(@page.id) do
-          decrement(:day_count => 1, :week_count => 2, :month_count => 3)
-          set(:author => "quentin")
-        end
-        
-        assert_page_counts @page, 0, 0, 0
-        
-        assert_author_changed @page
       end
     
       should "decrement with positive or negative numbers" do
@@ -216,18 +182,6 @@ class MultiModifierTest < Test::Unit::TestCase
         assert_author_changed @page2
       end
     
-      should "work with a single id" do
-        @page_class.modify(@page.id) do
-          set(:title => 'Home Revised')
-          set(:author => "quentin")
-        end
-        
-        @page.reload
-        assert_equal('Home Revised', @page.title)
-    
-        assert_author_changed @page
-      end
-    
       should "typecast values before querying" do
         @page_class.key :tags, Set
     
@@ -261,37 +215,37 @@ class MultiModifierTest < Test::Unit::TestCase
       end
     end
     
-    # context "push" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home')
-    #     @page2 = @page_class.create(:title => 'Home')
-    #   end
-    # 
-    #   should "work with criteria and modifier hashes" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       push(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(foo)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(foo)
-    #   end
-    # 
-    #   should "work with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       push(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(foo)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(foo)
-    #   end
-    # end
-    # 
+    context "push" do
+      setup do
+        @page  = @page_class.create(:title => 'Home')
+        @page2 = @page_class.create(:title => 'Home')
+      end
+    
+      should "work with criteria" do
+        @page_class.modify({:title => 'Home'}) do
+          push(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(foo), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(foo), @page2.tags)
+      end
+    
+      should "work with ids" do
+        @page_class.modify(@page.id, @page2.id) do
+          push(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(foo), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(foo), @page2.tags)
+      end
+    end
+    
     # context "push_all" do
     #   setup do
     #     @page  = @page_class.create(:title => 'Home')

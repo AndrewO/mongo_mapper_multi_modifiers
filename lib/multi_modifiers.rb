@@ -67,10 +67,10 @@ module MongoMapper
           merge_modifier('$unset', modifiers)
         end
 
-        # def push(*args)
-        #   modifier_update('$push', args)
-        # end
-        # 
+        def push(updates)
+          merge_modifier('$push', updates)
+        end
+        
         # def push_all(*args)
         #   modifier_update('$pushAll', args)
         # end
