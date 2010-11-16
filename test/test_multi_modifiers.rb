@@ -426,92 +426,107 @@ class MultiModifierTest < Test::Unit::TestCase
     end
   end
 
-  # context "InstanceMethods" do
-  #   should "be able to unset with keys" do
-  #     page = @page_class.create(:title => 'Foo', :tags => %w(foo))
-  #     page.unset(:title, :tags)
-  #     assert_keys_removed page, :title, :tags
-  #   end
-  # 
-  #   should "be able to increment with modifier hashes" do
-  #     page = @page_class.create
-  #     page.increment(:day_count => 1, :week_count => 2, :month_count => 3)
-  # 
-  #     assert_page_counts page, 1, 2, 3
-  #   end
-  # 
-  #   should "be able to decrement with modifier hashes" do
-  #     page = @page_class.create(:day_count => 1, :week_count => 2, :month_count => 3)
-  #     page.decrement(:day_count => 1, :week_count => 2, :month_count => 3)
-  # 
-  #     assert_page_counts page, 0, 0, 0
-  #   end
-  # 
-  #   should "always decrement when decrement is called whether number is positive or negative" do
-  #     page = @page_class.create(:day_count => 1, :week_count => 2, :month_count => 3)
-  #     page.decrement(:day_count => -1, :week_count => 2, :month_count => -3)
-  # 
-  #     assert_page_counts page, 0, 0, 0
-  #   end
-  # 
-  #   should "be able to set with modifier hashes" do
-  #     page  = @page_class.create(:title => 'Home')
-  #     page.set(:title => 'Home Revised')
-  # 
-  #     page.reload
-  #     page.title.should == 'Home Revised'
-  #   end
-  # 
-  #   should "be able to push with modifier hashes" do
-  #     page = @page_class.create
-  #     page.push(:tags => 'foo')
-  # 
-  #     page.reload
-  #     page.tags.should == %w(foo)
-  #   end
-  # 
-  #   should "be able to pull with criteria and modifier hashes" do
-  #     page = @page_class.create(:tags => %w(foo bar))
-  #     page.pull(:tags => 'foo')
-  # 
-  #     page.reload
-  #     page.tags.should == %w(bar)
-  #   end
-  # 
-  #   should "be able to add_to_set with criteria and modifier hash" do
-  #     page  = @page_class.create(:tags => 'foo')
-  #     page2 = @page_class.create
-  # 
-  #     page.add_to_set(:tags => 'foo')
-  #     page.add_to_set(:tags => 'foo')
-  # 
-  #     page.reload
-  #     page.tags.should == %w(foo)
-  # 
-  #     page2.reload
-  #     page.tags.should == %w(foo)
-  #   end
-  # 
-  #   should "be able to push uniq with criteria and modifier hash" do
-  #     page  = @page_class.create(:tags => 'foo')
-  #     page2 = @page_class.create
-  # 
-  #     page.push_uniq(:tags => 'foo')
-  #     page.push_uniq(:tags => 'foo')
-  # 
-  #     page.reload
-  #     page.tags.should == %w(foo)
-  # 
-  #     page2.reload
-  #     page.tags.should == %w(foo)
-  #   end
-  # 
-  #   should "be able to pop with modifier hashes" do
-  #     page = @page_class.create(:tags => %w(foo bar))
-  #     page.pop(:tags => 1)
-  # 
-  #     page.reload
-  #     page.tags.should == %w(foo)
-  #   end
-  # end
+  context "InstanceMethods" do
+    should "be able to unset with keys" do
+      page = @page_class.create(:title => 'Foo', :tags => %w(foo), :author => "quentin")
+      page.modify do
+        unset(:title, :tags)
+        unset(:author)
+      end
+      assert_keys_removed page, :title, :tags, :author
+    end
+  
+    should "be able to increment with modifier hashes" do
+      page = @page_class.create
+      page.modify do
+        increment(:day_count => 1, :week_count => 2, :month_count => 3)
+      end
+  
+      assert_page_counts page, 1, 2, 3
+    end
+  
+    should "be able to decrement with modifier hashes" do
+      page = @page_class.create(:day_count => 1, :week_count => 2, :month_count => 3)
+      page.modify do
+        decrement(:day_count => 1, :week_count => 2, :month_count => 3)
+      end
+  
+      assert_page_counts page, 0, 0, 0
+    end
+  
+    should "always decrement when decrement is called whether number is positive or negative" do
+      page = @page_class.create(:day_count => 1, :week_count => 2, :month_count => 3)
+      page.modify do
+        decrement(:day_count => -1, :week_count => 2, :month_count => -3)
+      end
+  
+      assert_page_counts page, 0, 0, 0
+    end
+  
+    should "be able to set with modifier hashes" do
+      page  = @page_class.create(:title => 'Home')
+      page.modify do
+        set(:title => 'Home Revised')
+      end
+  
+      page.reload
+      assert_equal('Home Revised', page.title)
+    end
+  
+    should "be able to push with modifier hashes" do
+      page = @page_class.create
+      page.modify do
+        push(:tags => 'foo')
+      end
+  
+      page.reload
+      assert_equal(%w(foo), page.tags)
+    end
+  
+    should "be able to pull with criteria and modifier hashes" do
+      page = @page_class.create(:tags => %w(foo bar))
+      page.modify do
+        pull(:tags => 'foo')
+      end
+  
+      page.reload
+      assert_equal(%w(bar), page.tags)
+    end
+  
+    should "be able to add_to_set with criteria and modifier hash" do
+      page  = @page_class.create(:tags => 'foo')
+      page2 = @page_class.create
+  
+      page.modify {add_to_set(:tags => 'foo')}
+      page2.modify {add_to_set(:tags => 'foo')}
+  
+      page.reload
+      assert_equal(%w(foo), page.tags)
+  
+      page2.reload
+      assert_equal(%w(foo), page2.tags)
+    end
+  
+    should "be able to push uniq with criteria and modifier hash" do
+      page  = @page_class.create(:tags => 'foo')
+      page2 = @page_class.create
+  
+      page.modify {push_uniq(:tags => 'foo')}
+      page2.modify {push_uniq(:tags => 'foo')}
+  
+      page.reload
+      assert_equal(%w(foo), page.tags)
+  
+      page2.reload
+      assert_equal(%w(foo), page2.tags)
+    end
+  
+    should "be able to pop with modifier hashes" do
+      page = @page_class.create(:tags => %w(foo bar))
+      page.modify {pop(:tags => 1)}
+  
+      page.reload
+      assert_equal(%w(foo), page.tags)
+    end
+  end
 end

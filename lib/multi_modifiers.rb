@@ -20,7 +20,9 @@ module MongoMapper
       end
       
       module InstanceMethods
-        
+        def modify(&blk)
+          self.class.modify(id, &blk)
+        end
       end
       
       class BulkModifier
