@@ -10,7 +10,7 @@ module MongoMapper
           bulk_modifier.instance_eval(&blk)
           
           # puts "Criteria: #{criteria.inspect}, modifiers: #{bulk_modifier.modifiers.inspect}"
-          collection.update(criteria, bulk_modifier.modifiers, :multi => true)
+          collection.update(criteria.to_hash, bulk_modifier.modifiers, :multi => true)
         end
         
         private
@@ -20,15 +20,16 @@ module MongoMapper
           # end
 
           def criteria_from_args(args)
-            if args.length == 1 
-              if args[0].is_a?(Hash)
-                args[0]
-              else
-                {:"_id" => args[0]}
-              end
-            else
-              {:"_id" => {"$in" => args}}
-            end
+            criteria_hash(args[0].is_a?(Hash) ? args[0] : {:id => args})
+            # if args.length == 1 
+            #   if args[0].is_a?(Hash)
+            #     args[0]
+            #   else
+            #     {:id => args[0]}
+            #   end
+            # else
+            #   {:id => {"$in" => args}}
+            # end
           end
       end
       
@@ -45,25 +46,25 @@ module MongoMapper
         end
         
         def increment(args)
-          @modifiers['$inc'] = args
+          merge_modifier('$inc', args)
         end
         
         def decrement(keys)
           values, to_decrement = keys.values, {}
           keys.keys.each_with_index { |k, i| to_decrement[k] = -values[i].abs }
-          @modifiers['$inc'] = to_decrement
+          merge_modifier('$inc', to_decrement)
         end
 
         def set(updates)
           updates.each do |key, value|
             updates[key] = doc_class.keys[key].set(value) if doc_class.key?(key)
           end
-          @modifiers['$set'] = updates
+          merge_modifier('$set', updates)
         end
 
         def unset(*keys)
           modifiers = keys.inject({}) { |hash, key| hash[key] = 1; hash }
-          @modifiers['$unset'] = modifiers
+          merge_modifier('$unset', modifiers)
         end
 
         # def push(*args)
@@ -91,7 +92,11 @@ module MongoMapper
         #   modifier_update('$pop', args)
         # end
 
-        
+        private
+          def merge_modifier(key, value)
+            @modifiers[key] ||= {}
+            @modifiers[key] = @modifiers[key].merge(value)
+          end
       end
     end
   end

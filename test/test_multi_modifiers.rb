@@ -63,7 +63,7 @@ class MultiModifierTest < Test::Unit::TestCase
         assert_author_changed @page
         assert_author_changed @page2
       end
-
+      
       should "work with a single id" do
         @page_class.modify(@page.id) do
           unset(:title, :tags)
@@ -178,78 +178,89 @@ class MultiModifierTest < Test::Unit::TestCase
       end
     end
     
-    # context "set" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home')
-    #     @page2 = @page_class.create(:title => 'Home')
-    #   end
-    # 
-    #   should "work with criteria and modifier hashes" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       set(:title => 'Home Revised')
-    #       set(:author => "quentin")
-    #     end
-    #     
-    #     @page.reload
-    #     @page.title.should == 'Home Revised'
-    # 
-    #     @page2.reload
-    #     @page2.title.should == 'Home Revised'
-    #     
-    #     assert_author_changed @page
-    #     assert_author_changed @page2
-    #   end
-    # 
-    #   should "work with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       set(:title => 'Home Revised')
-    #       set(:author => "quentin")
-    #     end
-    #     
-    #     @page.reload
-    #     @page.title.should == 'Home Revised'
-    # 
-    #     @page2.reload
-    #     @page2.title.should == 'Home Revised'
-    #     
-    #     assert_author_changed @page
-    #     assert_author_changed @page2
-    #   end
-    # 
-    #   should "typecast values before querying" do
-    #     @page_class.key :tags, Set
-    # 
-    #     assert_nothing_raised do
-    #       @page_class.modify(@page.id) do
-    #         set(:tags => ['foo', 'bar'].to_set)
-    #         set(:author => "quentin")
-    #       end
-    #       
-    #       @page.reload
-    #       @page.tags.should == Set.new(['foo', 'bar'])
-    #       
-    #       assert_author_changed @page
-    #       assert_author_changed @page2
-    #     end
-    #   end
-    # 
-    #   should "not typecast keys that are not defined in document" do
-    #     assert_raises(BSON::InvalidDocument) do
-    #       @page_class.modify(@page.id) do
-    #         set(:colors => ['red', 'green'].to_set)
-    #       end
-    #     end
-    #   end
-    # 
-    #   should "set keys that are not defined in document" do
-    #     @page_class.modify(@page.id) do
-    #       set(:colors => %w[red green])
-    #     end
-    #     @page.reload
-    #     @page[:colors].should == %w[red green]
-    #   end
-    # end
-    # 
+    context "set" do
+      setup do
+        @page  = @page_class.create(:title => 'Home')
+        @page2 = @page_class.create(:title => 'Home')
+      end
+    
+      should "work with criteria" do
+        @page_class.modify({:title => 'Home'}) do
+          set(:title => 'Home Revised')
+          set(:author => "quentin")
+        end
+        
+        @page.reload
+        assert_equal('Home Revised', @page.title)
+    
+        @page2.reload
+        assert_equal('Home Revised', @page2.title)
+        
+        assert_author_changed @page
+        assert_author_changed @page2
+      end
+    
+      should "work with ids" do
+        @page_class.modify(@page.id, @page2.id) do
+          set(:title => 'Home Revised')
+          set(:author => "quentin")
+        end
+        
+        @page.reload
+        assert_equal('Home Revised', @page.title)
+    
+        @page2.reload
+        assert_equal('Home Revised', @page2.title)
+        
+        assert_author_changed @page
+        assert_author_changed @page2
+      end
+    
+      should "work with a single id" do
+        @page_class.modify(@page.id) do
+          set(:title => 'Home Revised')
+          set(:author => "quentin")
+        end
+        
+        @page.reload
+        assert_equal('Home Revised', @page.title)
+    
+        assert_author_changed @page
+      end
+    
+      should "typecast values before querying" do
+        @page_class.key :tags, Set
+    
+        assert_nothing_raised do
+          @page_class.modify(@page.id) do
+            set(:tags => ['foo', 'bar'].to_set)
+            set(:author => "quentin")
+          end
+          
+          @page.reload
+          assert_equal(Set.new(['foo', 'bar']), @page.tags)
+          
+          assert_author_changed @page
+        end
+      end
+    
+      should "not typecast keys that are not defined in document" do
+        assert_raises(BSON::InvalidDocument) do
+          @page_class.modify(@page.id) do
+            set(:colors => ['red', 'green'].to_set)
+          end
+        end
+      end
+    
+      should "set keys that are not defined in document" do
+        @page_class.modify(@page.id) do
+          set(:colors => %w[red green])
+        end
+        @page.reload
+        assert_equal(%w[red green], @page[:colors])
+      end
+    end
+    
     # context "push" do
     #   setup do
     #     @page  = @page_class.create(:title => 'Home')
