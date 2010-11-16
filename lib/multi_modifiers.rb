@@ -61,11 +61,11 @@ module MongoMapper
           merge_modifier('$pushAll', updates)
         end
         
-        # def add_to_set(*args)
-        #   modifier_update('$addToSet', args)
-        # end
-        # alias push_uniq add_to_set
-        # 
+        def add_to_set(updates)
+          merge_modifier('$addToSet', updates)
+        end
+        alias push_uniq add_to_set
+        
         def pull(updates)
           merge_modifier('$pull', updates)
         end
@@ -73,10 +73,10 @@ module MongoMapper
         def pull_all(updates)
           merge_modifier('$pullAll', updates)
         end
-        # 
-        # def pop(*args)
-        #   modifier_update('$pop', args)
-        # end
+        
+        def pop(updates)
+          merge_modifier('$pop', updates)
+        end
 
         private
           def merge_modifier(key, value)

@@ -340,91 +340,90 @@ class MultiModifierTest < Test::Unit::TestCase
       end
     end
     
-    # context "add_to_set" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home', :tags => 'foo')
-    #     @page2 = @page_class.create(:title => 'Home')
-    #   end
-    # 
-    #   should "be able to add to set with criteria and modifier hash" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       add_to_set(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(foo)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(foo)
-    #   end
-    # 
-    #   should "be able to add to set with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       add_to_set(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(foo)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(foo)
-    #   end
-    # end
-    # 
-    # context "push_uniq" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home', :tags => 'foo')
-    #     @page2 = @page_class.create(:title => 'Home')
-    #   end
-    # 
-    #   should "be able to push uniq with criteria and modifier hash" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       push_uniq(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(foo)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(foo)
-    #   end
-    # 
-    #   should "be able to push uniq with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       push_uniq(:tags => 'foo')
-    #     end
-    # 
-    #     @page.reload
-    #     @page.tags.should == %w(foo)
-    # 
-    #     @page2.reload
-    #     @page.tags.should == %w(foo)
-    #   end
-    # end
-    # 
-    # context "pop" do
-    #   setup do
-    #     @page  = @page_class.create(:title => 'Home', :tags => %w(foo bar))
-    #   end
-    # 
-    #   should "be able to remove the last element the array" do
-    #     @page_class.modify(@page.id) do
-    #       pop(:tags => 1)
-    #     end
-    #     
-    #     @page.reload
-    #     @page.tags.should == %w(foo)
-    #   end
-    # 
-    #   should "be able to remove the first element of the array" do
-    #     @page_class.modify(@page.id) do
-    #       pop(:tags => -1)
-    #     end
-    #     
-    #     @page.reload
-    #     @page.tags.should == %w(bar)
-    #   end
-    # end
+    context "add_to_set" do
+      setup do
+        @page  = @page_class.create(:title => 'Home', :tags => 'foo')
+        @page2 = @page_class.create(:title => 'Home')
+      end
+    
+      should "be able to add to set with criteria and modifier hash" do
+        @page_class.modify({:title => 'Home'}) do
+          add_to_set(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(foo), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(foo), @page2.tags)
+      end
+    
+      should "be able to add to set with ids and modifier hash" do
+        @page_class.modify(@page.id, @page2.id) do
+          add_to_set(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(foo), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(foo), @page2.tags)
+      end
+    end
+    
+    context "push_uniq" do
+      setup do
+        @page  = @page_class.create(:title => 'Home', :tags => 'foo')
+        @page2 = @page_class.create(:title => 'Home')
+      end
+    
+      should "be able to push uniq with criteria and modifier hash" do
+        @page_class.modify({:title => 'Home'}) do
+          push_uniq(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(foo), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(foo), @page2.tags)
+      end
+    
+      should "be able to push uniq with ids and modifier hash" do
+        @page_class.modify(@page.id, @page2.id) do
+          push_uniq(:tags => 'foo')
+        end
+    
+        @page.reload
+        assert_equal(%w(foo), @page.tags)
+    
+        @page2.reload
+        assert_equal(%w(foo), @page2.tags)
+      end
+    end
+    
+    context "pop" do
+      setup do
+        @page  = @page_class.create(:title => 'Home', :tags => %w(foo bar))
+      end
+    
+      should "be able to remove the last element the array" do
+        @page_class.modify(@page.id) do
+          pop(:tags => 1)
+        end
+        
+        @page.reload
+        assert_equal(%w(foo), @page.tags)
+      end
+    
+      should "be able to remove the first element of the array" do
+        @page_class.modify(@page.id) do
+          pop(:tags => -1)
+        end
+        @page.reload
+        assert_equal(%w(bar), @page.tags)
+      end
+    end
   end
 
   # context "InstanceMethods" do
