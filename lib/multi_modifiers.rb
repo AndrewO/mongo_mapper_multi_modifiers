@@ -48,12 +48,11 @@ module MongoMapper
           @modifiers['$inc'] = args
         end
         
-        # def decrement(*args)
-        #   criteria, keys = criteria_and_keys_from_args(args)
-        #   values, to_decrement = keys.values, {}
-        #   keys.keys.each_with_index { |k, i| to_decrement[k] = -values[i].abs }
-        #   collection.update(criteria, {'$inc' => to_decrement}, :multi => true)
-        # end
+        def decrement(keys)
+          values, to_decrement = keys.values, {}
+          keys.keys.each_with_index { |k, i| to_decrement[k] = -values[i].abs }
+          @modifiers['$inc'] = to_decrement
+        end
 
         def set(updates)
           updates.each do |key, value|

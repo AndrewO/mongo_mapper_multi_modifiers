@@ -121,52 +121,63 @@ class MultiModifierTest < Test::Unit::TestCase
       
     end
     
-    # context "decrement" do
-    #   setup do
-    #     @page = @page_class.create(:title => 'Home', :day_count => 1, :week_count => 2, :month_count => 3)
-    #     @page2 = @page_class.create(:title => 'Home', :day_count => 1, :week_count => 2, :month_count => 3)
-    #   end
-    # 
-    #   should "work with criteria and modifier hashes" do
-    #     @page_class.modify({:title => 'Home'}) do
-    #       decrement(:day_count => 1, :week_count => 2, :month_count => 3)
-    #       set(:author => "quentin")
-    #     end
-    #     
-    #     assert_page_counts @page, 0, 0, 0
-    #     assert_page_counts @page2, 0, 0, 0
-    #     
-    #     assert_author_changed @page
-    #     assert_author_changed @page2
-    #   end
-    # 
-    #   should "work with ids and modifier hash" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       decrement(:day_count => 1, :week_count => 2, :month_count => 3)
-    #       set(:author => "quentin")
-    #     end
-    #     
-    #     assert_page_counts @page, 0, 0, 0
-    #     assert_page_counts @page2, 0, 0, 0
-    #     
-    #     assert_author_changed @page
-    #     assert_author_changed @page2
-    #   end
-    # 
-    #   should "decrement with positive or negative numbers" do
-    #     @page_class.modify(@page.id, @page2.id) do
-    #       decrement(:day_count => -1, :week_count => 2, :month_count => -3)
-    #       set(:author => "quentin")
-    #     end
-    #     
-    #     assert_page_counts @page, 0, 0, 0
-    #     assert_page_counts @page2, 0, 0, 0
-    #     
-    #     assert_author_changed @page
-    #     assert_author_changed @page2
-    #   end
-    # end
-    # 
+    context "decrement" do
+      setup do
+        @page = @page_class.create(:title => 'Home', :day_count => 1, :week_count => 2, :month_count => 3)
+        @page2 = @page_class.create(:title => 'Home', :day_count => 1, :week_count => 2, :month_count => 3)
+      end
+    
+      should "work with criteria" do
+        @page_class.modify({:title => 'Home'}) do
+          decrement(:day_count => 1, :week_count => 2, :month_count => 3)
+          set(:author => "quentin")
+        end
+        
+        assert_page_counts @page, 0, 0, 0
+        assert_page_counts @page2, 0, 0, 0
+        
+        assert_author_changed @page
+        assert_author_changed @page2
+      end
+    
+      should "work with ids" do
+        @page_class.modify(@page.id, @page2.id) do
+          decrement(:day_count => 1, :week_count => 2, :month_count => 3)
+          set(:author => "quentin")
+        end
+        
+        assert_page_counts @page, 0, 0, 0
+        assert_page_counts @page2, 0, 0, 0
+        
+        assert_author_changed @page
+        assert_author_changed @page2
+      end
+      
+      should "work with a single id" do
+        @page_class.modify(@page.id) do
+          decrement(:day_count => 1, :week_count => 2, :month_count => 3)
+          set(:author => "quentin")
+        end
+        
+        assert_page_counts @page, 0, 0, 0
+        
+        assert_author_changed @page
+      end
+    
+      should "decrement with positive or negative numbers" do
+        @page_class.modify(@page.id, @page2.id) do
+          decrement(:day_count => -1, :week_count => 2, :month_count => -3)
+          set(:author => "quentin")
+        end
+        
+        assert_page_counts @page, 0, 0, 0
+        assert_page_counts @page2, 0, 0, 0
+        
+        assert_author_changed @page
+        assert_author_changed @page2
+      end
+    end
+    
     # context "set" do
     #   setup do
     #     @page  = @page_class.create(:title => 'Home')
