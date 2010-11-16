@@ -44,11 +44,10 @@ module MongoMapper
           @modifiers = {}
         end
         
-        # def increment(*args)
-        #   
-        #   modifier_update('$inc', args)
-        # end
-        # 
+        def increment(args)
+          @modifiers['$inc'] = args
+        end
+        
         # def decrement(*args)
         #   criteria, keys = criteria_and_keys_from_args(args)
         #   values, to_decrement = keys.values, {}

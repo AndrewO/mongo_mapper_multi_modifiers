@@ -96,7 +96,6 @@ class MultiModifierTest < Test::Unit::TestCase
       end
     
       should "work with ids and modifier hash" do
-        @page_class.increment(:day_count => 1, :week_count => 2, :month_count => 3)
         @page_class.modify(@page.id, @page2.id) do
           increment(:day_count => 1, :week_count => 2, :month_count => 3)
           set(:author => "quentin")
