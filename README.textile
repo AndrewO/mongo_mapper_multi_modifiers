@@ -5,7 +5,7 @@ This is a plugin for MongoMapper that allows updates to multiple fields in a sin
 h2. Example
 
 <pre><code>
-Foo.modify do
+Foo.modify(:title => "My Favorite Colors") do
   push(:colors => ["red", "blue"])
   increment(:num_colors => 2)
 end
