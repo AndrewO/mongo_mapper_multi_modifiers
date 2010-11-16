@@ -1,0 +1,43 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (3.0.2)
+    bson (1.1.2)
+    columnize (0.3.1)
+    i18n (0.4.2)
+    jnunemaker-validatable (1.8.4)
+      activesupport (>= 2.3.4)
+    json (1.4.6)
+    linecache (0.43)
+    log_buddy (0.5.0)
+    mocha (0.9.9)
+      rake
+    mongo (1.1.2)
+      bson (>= 1.1.1)
+    mongo_mapper (0.8.6)
+      activesupport (>= 2.3.4)
+      jnunemaker-validatable (~> 1.8.4)
+      plucky (~> 0.3.6)
+    plucky (0.3.6)
+      mongo (~> 1.1)
+    rake (0.8.7)
+    ruby-debug (0.10.3)
+      columnize (>= 0.1)
+      ruby-debug-base (~> 0.10.3.0)
+    ruby-debug-base (0.10.3)
+      linecache (>= 0.3)
+    shoulda (2.11.3)
+    timecop (0.3.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  i18n
+  json
+  log_buddy
+  mocha
+  mongo_mapper
+  ruby-debug
+  shoulda
+  timecop
