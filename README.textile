@@ -1,0 +1,17 @@
+h1. MongoMapper Multi-Modifiers
+
+This is a plugin for MongoMapper that allows updates to multiple fields in a single document within a single update call.
+
+h2. Example
+
+<pre><code>
+Foo.modify do
+  push(:colors => ["red", "blue"])
+  increment(:num_colors => 1)
+end
+</code></pre>
+
+h2. TODO
+
+* Gem spec
+* Look at how BulkModifier evaluates its block and see if there's a cleaner way.
